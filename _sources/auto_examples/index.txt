@@ -1,0 +1,10 @@
+.. _general_examples:
+
+General examples
+================
+
+Introductory examples.
+.. raw:: html
+
+    <div style='clear:both'></div>
+
