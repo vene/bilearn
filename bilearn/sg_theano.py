@@ -24,9 +24,9 @@ from theano import sparse as tsp
 from theano.sparse.basic import _is_sparse_variable as _tn_is_sparse
 
 from lasagne.updates import adam  # could use sgd, adagrad, etc
-from lasagne.objectives import binary_hinge_loss, binary_crossentropy
 
 from .lbfgs import _bilinear_forward
+
 
 def safe_sparse_mul(X, Y):
     if hasattr(X, 'multiply'):
