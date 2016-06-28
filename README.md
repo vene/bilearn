@@ -6,6 +6,8 @@
 
 **bilearn** is a package implementing bilinear models for classification and regression.
 
+**This package is heavily under construction for now.**
+
 ## Important Links
 HTML Documentation - http://github.org/vene/bilearn/
 
