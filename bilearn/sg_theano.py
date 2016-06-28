@@ -68,15 +68,15 @@ class LowRankBilinear(object):
 
         rng = check_random_state(self.random_state)
 
-        if not self.warm_start or (hasattr(self, 'U_') and self.U_ is None):
-            U_init = rng.randn(n_features_left, self.n_components)
-        else:
+        if self.warm_start and hasattr(self, 'U_'):
             U_init = self.U_
-
-        if not self.warm_start or (hasattr(self, 'V_') and self.V_ is None):
-            V_init = rng.randn(n_features_right, self.n_components)
         else:
+            U_init = rng.randn(n_features_left, self.n_components)
+
+        if self.warm_start and hasattr(self, 'V_'):
             V_init = self.V_
+        else:
+            V_init = rng.randn(n_features_right, self.n_components)
 
         if self.update_rule is None:
             update_rule = adam
@@ -245,4 +245,4 @@ if __name__ == '__main__':
         print("\tTest accuracy: {:.2f}".format(np.mean(y_pred == y_val)))
 
     plt.legend()
-plt.show()
+    plt.show()
