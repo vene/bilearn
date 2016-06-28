@@ -26,6 +26,7 @@ from theano.sparse.basic import _is_sparse_variable as _tn_is_sparse
 from lasagne.updates import adam  # could use sgd, adagrad, etc
 from lasagne.objectives import binary_hinge_loss, binary_crossentropy
 
+from .lbfgs import _bilinear_forward
 
 def safe_sparse_mul(X, Y):
     if hasattr(X, 'multiply'):
@@ -81,11 +82,11 @@ class BilinearSG(object):
 
 class BilinearRegressorSG(BilinearSG):
 
-    def __init__(self, n_components=5, l2_reg=0.01, max_iter=1000,
+    def __init__(self, alpha=0.01, n_components=10, max_iter=50000,
                  random_state=0, warm_start=False, fit_diag=True,
                  fit_linear=True, update_rule=None, update_params=None):
+        self.alpha = alpha
         self.n_components = n_components
-        self.l2_reg = l2_reg
         self.max_iter = max_iter
         self.random_state = random_state
         self.warm_start = warm_start
@@ -184,7 +185,7 @@ class BilinearRegressorSG(BilinearSG):
 
         # regularization
         for var in vars:
-            loss += self.l2_reg * T.sum(var ** 2)
+            loss += self.alpha * T.sum(var ** 2)
 
         train_model = tn.function(inputs=[X_left_tn, X_right_tn, y_tn],
                                   outputs=loss,
@@ -193,9 +194,11 @@ class BilinearRegressorSG(BilinearSG):
 
         self.losses_ = []
 
+        # TODO minibatch
         for _ in range(self.max_iter):
             self.losses_.append(train_model(X_left, X_right, y))
 
+        # store learned parameters
         self.U_ = U.eval()
         self.V_ = V.eval()
 
@@ -203,23 +206,22 @@ class BilinearRegressorSG(BilinearSG):
             self.w_left_ = w_left.eval()
             self.w_right_ = w_right.eval()
 
-        if fit_diag:
+        if self.fit_diag:
             self.diag_ = diag.eval()
 
         return self
 
     def predict(self, X_left, X_right):
-        y_pred = np.sum(safe_sparse_dot(X_left, self.U_) *
-                        safe_sparse_dot(X_right, self.V_),
-                        axis=1)
+        y_pred = _bilinear_forward(self.U_, self.V_, X_left, X_right)
 
         if self.fit_linear:
             y_pred += safe_sparse_dot(X_left, self.w_left_)
             y_pred += safe_sparse_dot(X_right, self.w_right_)
 
-        if self.fit_diag and hasattr(self, 'diag_'):
+        if self.fit_diag:
             y_pred += safe_sparse_dot(safe_sparse_mul(X_left, X_right),
                                       self.diag_)
+
         return y_pred
 
 
@@ -245,8 +247,7 @@ if __name__ == '__main__':
 
         print("fit_linear={}, fit_diag={}".format(fit_linear, fit_diag))
 
-        lrbl = BilinearRegressorSG(n_components=10,
-                                   l2_reg=0.01,
+        lrbl = BilinearRegressorSG(alpha=0.01,
                                    fit_linear=fit_linear,
                                    fit_diag=fit_diag,
                                    max_iter=20000,
