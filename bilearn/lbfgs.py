@@ -33,7 +33,7 @@ def _bilinear_loss_grad(U, V, X_left, X_right, y, alpha):
     grad_loss = (y_pred - y)[:, np.newaxis]
     grad_U = safe_sparse_dot(X_left.T, (grad_loss * XrV))
     grad_U /= n_samples
-    grad_U += alpha * U ** 2
+    grad_U += alpha * U
 
     return loss, grad_U.ravel()
 
