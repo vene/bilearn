@@ -31,7 +31,7 @@ def test_learn():
     assert_array_almost_equal(y_pred, y, decimal=2)
 
 
-def test_logistic_loss_and_grad():
+def test_bilinear_loss_and_grad():
     X_left_sp = X_left.copy()
     X_left_sp[X_left_sp < .1] = 0
     X_left_sp = sp.csr_matrix(X_left_sp)
@@ -40,8 +40,8 @@ def test_logistic_loss_and_grad():
     X_right_sp[X_right_sp < .1] = 0
     X_right_sp = sp.csr_matrix(X_right_sp)
 
-    U = np.zeros_like(true_U)
-    V = np.zeros_like(true_V)
+    U = rng.randn(*true_U.shape)
+    V = rng.randn(*true_V.shape)
 
     for (Xl, Xr) in ((X_left, X_right), (X_left_sp, X_right_sp)):
         _, grad = _bilinear_loss_grad(U, V, Xl, Xr, y, alpha=1)
