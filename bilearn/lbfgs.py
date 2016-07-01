@@ -38,7 +38,7 @@ def _bilinear_loss_grad(U, V, X_left, X_right, y, alpha):
     return loss, grad_U.ravel()
 
 
-def _bilinear_step(X_left, X_right, y, U, V, alpha=0.1, tol=1e-6, max_iter=1,
+def _bl_lbfgs_step(X_left, X_right, y, U, V, alpha=0.1, tol=1e-6, max_iter=1,
                    verbose=False):
 
     u_new, loss, info = optimize.fmin_l_bfgs_b(
@@ -98,7 +98,7 @@ class BilinearRegressor(object):
 
         old_loss = np.inf
         for it in range(1, self.max_iter + 1):
-            loss, U, V = _bilinear_step(X_left, X_right, y, U, V, self.alpha,
+            loss, U, V = _bl_lbfgs_step(X_left, X_right, y, U, V, self.alpha,
                                         self.tol, self.max_inner_iter,
                                         self.verbose)
 

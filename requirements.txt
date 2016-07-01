@@ -3,3 +3,4 @@ nose_parameterized
 scikit-learn>=0.17
 Theano>=0.8
 Lasagne>=0.1
+sklearn-contrib-lightning
