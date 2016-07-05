@@ -29,8 +29,7 @@ conda create -n testenv --yes python=$PYTHON_VERSION pip nose \
 
 source activate testenv
 
-pip install scikit-learn==$SKLEARN_VERSION
-conda install -y -q -c conda-forge sklearn-contrib-lightning
+pip install scikit-learn==$SKLEARN_VERSION sklearn-contrib-lightning
 
 if [[ "$COVERAGE" == "true" ]]; then
     pip install coverage coveralls
