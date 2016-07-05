@@ -1,6 +1,6 @@
 nose>=1.1.2
 nose_parameterized
-scikit-learn>=0.17
+scikit-learn>=0.16.1
 Theano>=0.8
 Lasagne>=0.1
 sklearn-contrib-lightning

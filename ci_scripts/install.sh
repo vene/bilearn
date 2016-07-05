@@ -26,6 +26,7 @@ popd
 # provided versions
 conda create -n testenv --yes python=$PYTHON_VERSION pip nose \
       numpy=$NUMPY_VERSION scipy=$SCIPY_VERSION cython=$CYTHON_VERSION
+      scikit-learn=$SKLEARN_VERSION
 
 source activate testenv
 
@@ -38,5 +39,5 @@ fi
 python --version
 python -c "import numpy; print('numpy %s' % numpy.__version__)"
 python -c "import scipy; print('scipy %s' % scipy.__version__)"
-pip -r requirements.txt
+pip install -r requirements.txt
 python setup.py develop
