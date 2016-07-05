@@ -29,6 +29,7 @@ conda create -n testenv --yes python=$PYTHON_VERSION pip nose \
 
 source activate testenv
 
+conda install -c conda-forge sklearn-contrib-lightning
 
 if [[ "$COVERAGE" == "true" ]]; then
     pip install coverage coveralls
@@ -37,4 +38,5 @@ fi
 python --version
 python -c "import numpy; print('numpy %s' % numpy.__version__)"
 python -c "import scipy; print('scipy %s' % scipy.__version__)"
+pip -r requirements.txt
 python setup.py develop
